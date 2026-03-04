@@ -4,6 +4,7 @@
   "description": "Interface for creating daily notes in Obsidian",
   "author": "liamcain",
   "main": "./dist/main.js",
+  "types": "./index.d.ts",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -15,6 +16,8 @@
   "scripts": {
     "lint": "eslint . --ext .ts",
     "build": "npm run lint && rollup -c",
+    "prepare": "rollup -c",
+    "prepack": "npm run build",
     "test": "jest",
     "test:watch": "yarn test -- --watch"
   },

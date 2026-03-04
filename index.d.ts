@@ -46,7 +46,22 @@ export function getTemplateInfo(template: string): Promise<[string, IFoldInfo]>;
 
 // Daily
 export function appHasDailyNotesPluginLoaded(): boolean;
-export function createDailyNote(date: Moment): Promise<TFile>;
+export interface CreateDailyNoteOptions {
+  /**
+   * Overrides the note name format (Moment format string).
+   * Example: `MM-DD-YY`
+   */
+  noteNameFormat?: string;
+  /**
+   * Overrides the folder path using a Moment format string.
+   * Example: `Calendar/YYYY/MMMM/` -> `Calendar/2026/March/`
+   */
+  folderPathFormat?: string;
+}
+export function createDailyNote(
+  date: Moment,
+  options?: CreateDailyNoteOptions
+): Promise<TFile>;
 export function getDailyNote(
   date: Moment,
   dailyNotes: Record<string, TFile>

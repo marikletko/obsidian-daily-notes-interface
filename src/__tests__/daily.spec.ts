@@ -224,4 +224,25 @@ describe("createDailyNote", () => {
 `
     );
   });
+
+  test("supports custom folderPathFormat and noteNameFormat", async () => {
+    const getTemplateInfo = jest.spyOn(vaultUtils, "getTemplateInfo");
+    getTemplateInfo.mockResolvedValue(["", null]);
+
+    setDailyConfig({
+      folder: "/",
+      format: "YYYY-MM-DD",
+      template: "template",
+    });
+
+    await dailyNotesInterface.createDailyNote(window.moment(), {
+      noteNameFormat: "YYYY-MM-DD",
+      folderPathFormat: "Calendar/YYYY/MMMM",
+    });
+
+    expect(window.app.vault.create).toHaveBeenCalledWith(
+      "/Calendar/2021/February/2021-02-15.md",
+      ""
+    );
+  });
 });

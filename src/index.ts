@@ -92,6 +92,7 @@ import { createYearlyNote, getAllYearlyNotes, getYearlyNote } from "./yearly";
 
 export { getDateUID, getDateFromFile, getDateFromPath } from "./parse";
 export { getTemplateInfo } from "./vault";
+export type { CreateDailyNoteOptions } from "./daily";
 
 function getPeriodicNoteSettings(
   granularity: IGranularity

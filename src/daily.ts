@@ -7,6 +7,19 @@ import { getTemplateInfo, getNotePath } from "./vault";
 
 export class DailyNotesFolderMissingError extends Error {}
 
+export interface CreateDailyNoteOptions {
+  /**
+   * Overrides the note name format (Moment format string).
+   */
+  noteNameFormat?: string;
+  /**
+   * Overrides the folder path using a Moment format string.
+   *
+   * Example: `Calendar/YYYY/MMMM/` -> `Calendar/2026/March/`
+   */
+  folderPathFormat?: string;
+}
+
 /**
  * This function mimics the behavior of the daily-notes plugin
  * so it will replace {{date}}, {{title}}, and {{time}} with the
@@ -14,16 +27,26 @@ export class DailyNotesFolderMissingError extends Error {}
  *
  * Note: it has an added bonus that it's not 'today' specific.
  */
-export async function createDailyNote(date: Moment): Promise<TFile> {
+export async function createDailyNote(
+  date: Moment,
+  options: CreateDailyNoteOptions = {}
+): Promise<TFile> {
   const app = window.app as App;
   const { vault } = app;
   const moment = window.moment;
 
-  const { template, format, folder } = getDailyNoteSettings();
+  const settings = getDailyNoteSettings();
+  const template = settings.template;
+  const format = options.noteNameFormat ?? settings.format ?? "YYYY-MM-DD";
+  const folder = settings.folder ?? "";
 
   const [templateContents, IFoldInfo] = await getTemplateInfo(template);
   const filename = date.format(format);
-  const normalizedPath = await getNotePath(folder, filename);
+
+  const folderPathFormat = options.folderPathFormat?.trim();
+  const normalizedPath = await (folderPathFormat
+    ? getNotePath(date.format(folderPathFormat), filename)
+    : getNotePath(folder, filename));
 
   try {
     const createdFile = await vault.create(
